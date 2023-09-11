@@ -2,8 +2,6 @@
 
 <?php require_once "inc/templates/header.php" ?>
 
-  <section class="Main">
-
-  </section>
+<?php require_once "inc/templates/content.php" ?>
 
 <?php require_once "inc/templates/footer.php" ?>

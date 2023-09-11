@@ -3,3 +3,5 @@ php_flag display_errors on
 
 Options +FollowSymLinks
 RewriteEngine on
+
+RewriteRule ^([a-zA-Z]+)/$ index.php?page=$1
