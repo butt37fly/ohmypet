@@ -19,7 +19,7 @@
 
   if (!in_array($_GET['page'], PAGES)) {
 
-    redirect_to('404/');
+    require_once "inc/pages/404.php";
 
   } else {
 
