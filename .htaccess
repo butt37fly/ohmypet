@@ -5,3 +5,6 @@ Options +FollowSymLinks
 RewriteEngine on
 
 RewriteRule ^([a-zA-Z0-9]+)/$ index.php?page=$1
+
+RewriteRule ^c/account/$ src/controllers/account.controller.php
+RewriteRule ^c/account/([a-zA-Z]+)/$ src/controllers/account.controller.php?a=$1

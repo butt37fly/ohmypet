@@ -26,7 +26,8 @@ DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
   id int auto_increment NOT NULL,
-  username varchar(20) NOT NULL unique,
+  name varchar(20) NOT NULL,
+  last_name varchar(20) NOT NULL,
   email varchar(50) NOT NULL unique,
   password varchar(255) NOT NULL,
   reg_date date NOT NULL,
@@ -60,5 +61,5 @@ CREATE TABLE orders (
   FOREIGN KEY(user_id) REFERENCES users(id)
 ) ENGINE=InnoDB;
 
-INSERT INTO users (username, email, password, reg_date) VALUES
-( 'butt37fly', 'admin@ohmypet.com', '$2y$10$i.ivTZnhG4vywALVhgFx4u.pPBYbuw5S2yJJ5AGGbnpDtwTF.9qwu', curdate() );
+INSERT INTO users (name, last_name, email, password, reg_date) VALUES
+( 'Andrés', 'Ospina', 'admin@ohmypet.com', '$2y$10$i.ivTZnhG4vywALVhgFx4u.pPBYbuw5S2yJJ5AGGbnpDtwTF.9qwu', curdate() );

@@ -490,6 +490,11 @@ body.ready .Overlay{
 
 /*** Form ***/
 
+.Form-container{
+  width: auto;
+  max-width: 750px;
+}
+
 .Form-container__header{
   display: flex;
   flex-direction: column;
@@ -594,6 +599,29 @@ body.ready .Overlay{
 
 .Form__notices--error{
   border-color: var(--c-violet);
+}
+
+/*** Notice ***/
+
+.Notice{
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--s-xs);
+  margin: var(--s-s) auto;
+}
+
+.Notice--error{
+  background-color: var(--c-orange);
+}
+
+.Notice--check{
+  background-color: var(--c-green);
+}
+
+.Notice__content{
+  text-align: center;
 }
 
 
