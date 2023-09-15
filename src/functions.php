@@ -1,5 +1,7 @@
 <?php
 
+require_once "db.php";
+
 /**
  * Inicia una sesión sólo en caso de que esta no se haya iniciado con anterioridad
  */
@@ -202,6 +204,37 @@ function login_user($data)
 
   return $output;
 }
+
+# --- Get ---
+
+function get_orders(int $id): array
+{
+
+
+  return [];
+}
+
+function get_categories(int $id = null): array
+{
+  global $pdo;
+
+  $result = [];
+
+  $query = "SELECT * FROM categories";
+
+  if ($id !== null && $id !== 0)
+    $query .= " WHERE id = $id";
+
+  $sth = $pdo->prepare($query);
+
+  try {
+    $sth->execute();
+    $result = $sth->fetchAll();
+  } finally {
+    return $result;
+  }
+}
+
 
 # --- Display ---
 

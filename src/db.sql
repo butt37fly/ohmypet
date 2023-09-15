@@ -63,3 +63,13 @@ CREATE TABLE orders (
 
 INSERT INTO users (name, last_name, email, password, reg_date) VALUES
 ( 'Andrés', 'Ospina', 'admin@ohmypet.com', '$2y$10$i.ivTZnhG4vywALVhgFx4u.pPBYbuw5S2yJJ5AGGbnpDtwTF.9qwu', curdate() );
+
+INSERT INTO pets ( name, slug ) VALUES 
+( 'Perros', 'perros' ), 
+( 'Gatos', 'gatos' );
+
+INSERT INTO categories ( name, slug ) VALUES
+( 'Aseo', 'aseo' ),
+( 'Alimento', 'alimento' ),
+( 'Deporte', 'deporte' ),
+( 'Salud', 'salud' );
