@@ -235,6 +235,48 @@ function get_categories(int $id = null): array
   }
 }
 
+function get_pets(int $id = null): array
+{
+  global $pdo;
+
+  $result = [];
+
+  $query = "SELECT * FROM pets";
+
+  if ($id !== null && $id !== 0)
+    $query .= " WHERE id = $id";
+
+  $sth = $pdo->prepare($query);
+
+  try {
+    $sth->execute();
+    $result = $sth->fetchAll();
+  } finally {
+    return $result;
+  }
+}
+
+function get_products(): array
+{
+  global $pdo;
+
+  $result = [];
+
+  $query = "SELECT p.id, c.id as category_id, c.name as category_name, pet.id as pet_id, pet.name as pet_name, p.title, p.slug, p.price, p.thumb, p.post_date 
+    FROM products p
+    INNER JOIN categories as c
+    ON c.id = category_id
+    INNER JOIN pets as pet
+    ON pet.id = pet_id";
+  $sth = $pdo->prepare($query);
+
+  try {
+    $sth->execute();
+    $result = $sth->fetchAll();
+  } finally {
+    return $result;
+  }
+}
 
 # --- Display ---
 

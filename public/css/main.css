@@ -295,6 +295,7 @@ body.ready .Overlay {
   justify-content: flex-start;
   align-items: center;
   margin-top: var(--s-header);
+  position: relative;
 }
 
 /*** Footer ***/
@@ -657,17 +658,25 @@ body.ready .Overlay {
   display: flex;
   flex-direction: column;
   gap: var(--s-xs);
+  padding: var(--s-s);
+  margin: auto;
 }
 
 .List__item {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: var(--s-m);
   border: var(--d-border-width) solid var(--c-violet);
   border-radius: var(--d-border-radius);
   padding: var(--s-s) var(--s-l);
   background-color: var(--c-white);
+}
+
+.List__img img{
+  width: 100px;
+    aspect-ratio: 1;
+    object-fit: cover;
 }
 
 .List__actions {
@@ -679,11 +688,95 @@ body.ready .Overlay {
   border-left: var(--d-border-width) solid var(--c-black);
 }
 
-.List__edit{
+.List__edit {
   cursor: pointer;
 }
 
-.List__item:has( i:hover ){
+.List__item:has(i:hover) {
+  filter: drop-shadow(var(--d-shadow));
+}
+
+/*** Shortcut ***/
+
+.Shortcut {
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-s);
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
+
+.Shortcut__button {
+  cursor: pointer;
+  color: var(--c-black);
+  font-size: var(--s-xxl);
+}
+
+.Shortcut__button:hover {
+  filter: drop-shadow(var(--d-shadow));
+}
+
+.Modal{
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0);
+  pointer-events: none;
+}
+
+.Modal--active{
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  pointer-events: all;
+}
+
+.Modal--active .Modal__wrapper{
+  opacity: 1;
+}
+
+.Modal__wrapper{
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: var(--s-l);
+  margin: auto;
+  padding: var(--s-xl);
+  border-radius: var(--d-border-radius);
+  background-color: var(--c-white);
+  position: relative;
+  opacity: 0;
+}
+
+.Modal__header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: var(--d-border-width) solid var(--c-black);
+  padding-bottom: var(--s-xxs);
+}
+
+.Modal__button{
+  font-size: var(--s-xl);
+  top: -10px;
+  right: -10px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.Modal__button:hover{
   filter: drop-shadow(var(--d-shadow));
 }
 

@@ -25,7 +25,6 @@ $orders = get_orders($id); ?>
       <?php if ($id === 1): ?>
 
         <a href="<?php echo SITE_URI . "products/" ?>" class="Button Button--orange">Productos</a>
-        <a href="<?php echo SITE_URI . "categories/" ?>" class="Button Button--orange">Categorías</a>
 
       <?php endif; ?>
 
