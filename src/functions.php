@@ -73,7 +73,8 @@ function server_says($code, $type, $value = "")
       "006" => "El correo y la contraseña no coinciden."
     ],
     "check" => [
-      "001" => "La cuenta se ha creado exitosamente"
+      "001" => "La cuenta se ha creado exitosamente",
+      "002" => "El producto se ha $value correctamente"
     ]
   );
 
@@ -276,6 +277,22 @@ function get_products(): array
   } finally {
     return $result;
   }
+}
+
+# --- Delete ---
+/**
+ * 
+ */
+function delete_product( int $id ) : void 
+{
+  global $pdo;
+
+  $query = "DELETE FROM products WHERE id = :value";
+  $sth = $pdo->prepare( $query );
+  $sth->bindParam( ':value', $id );
+  $sth->execute();
+
+  return;
 }
 
 # --- Display ---
