@@ -8,3 +8,6 @@ RewriteRule ^([a-zA-Z0-9]+)/$ index.php?page=$1
 
 RewriteRule ^c/account/$ src/controllers/account.controller.php
 RewriteRule ^c/account/([a-zA-Z]+)/$ src/controllers/account.controller.php?a=$1
+
+RewriteRule ^c/products/$ src/controllers/products.controller.php
+RewriteRule ^c/products/([a-zA-Z]+)/([0-9]+)/$ src/controllers/products.controller.php?a=$1&id=$2
