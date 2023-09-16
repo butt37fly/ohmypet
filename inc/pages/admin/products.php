@@ -2,11 +2,13 @@
 
 <div class="Products">
 
+  <?php display_server_msg(); ?>
+
   <?php if (empty($products)): ?>
 
     <h1 class="Products__title"> Parece que no hay productos registrados.</h1>
 
-  <?php else: ?>
+  <?php else: ?>  
 
     <ul class="List">
 
