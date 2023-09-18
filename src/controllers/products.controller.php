@@ -79,7 +79,7 @@ if (isset($_POST['submit'])) {
       redirect_to('products/');
     }
 
-    if (isset($_FILES['thumb']) || empty($_FILES['thumb']['name'])) {
+    if (isset($_FILES['thumb']) && !empty($_FILES['thumb']['name'])) {
 
       $img = upload_img($_FILES['thumb']);
       $img = empty($img) ? $default_img : $img;
