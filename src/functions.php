@@ -14,7 +14,7 @@ function custom_session_start(): void
 /**
  * Verifica si el usuario ha iniciado sesión 
  * 
- * @return bool
+ * @return bool Devuelve `true` si el usuario ha iniciado sesión, de lo contrario devuelve `false`
  */
 function is_user_logged(): bool
 {
@@ -37,9 +37,16 @@ function redirect_to(string $page = "home/"): void
 }
 
 /**
+ * Verifica si la contraseña ingresada por el usuario corresponde con la registrada para su perfil en la db
  * 
+ * @param $password Input del usuario
+ * @param $data Información necesaria para la consulta del usuario
+ * - `trigger` =>  Nombre de la columna en la db que se usará para relacionar la información 
+ * - `value` => Valor del `triger` 
+ *  
+ * @return bool Devuelve `true` si la contraseña coincide, de lo contrario devuelve `false`
  */
-function check_password($password, $data)
+function check_password(string $password, array $data): bool
 {
   global $pdo;
 
@@ -58,9 +65,17 @@ function check_password($password, $data)
 }
 
 /**
+ * Función general para enviar una alerta del servidor hacia el cliente usando `$_SESSION`.
  * 
+ * @param $code Código del mensaje 
+ * - `000` => Algo ha salido mal, inténtalo de nuevo.
+ * @param $type Tipo de mensaje
+ * - `error`, `check`
+ * @param $value Algunos mensajes necesitan el valor de `$value` para dar información más específica al usuario, opcionalmente, si `$code` no está registrado, se renderizará el contenido de `$value`,
+ * - `001`: El campo <b>`$value`</b> está vacío.
+ * - `custom`: ¡Este es un mensaje personalizado!
  */
-function server_says($code, $type, $value = "")
+function server_says(string $code, string $type, string $value = ""): void
 {
   $server_codes = array(
     "error" => [
@@ -92,13 +107,18 @@ function server_says($code, $type, $value = "")
     return;
 
   $_SESSION['server_says'] = ['msg' => $msg, "type" => $type];
-
 }
 
 /**
+ * Valida que el `$input` del usuario sea de tipo `$type`
  * 
+ * @param $input Datos enviados por el usuario
+ * @param $type Tipo del input que deberá validar
+ * - `password`
+ * 
+ * @return bool Devuelve `true` si la validación es correcta, de lo contrario devuelve `false`
  */
-function validate_input($input, $type)
+function validate_input(string $input, string $type): bool
 {
 
   if ($type == "password") {
@@ -108,18 +128,20 @@ function validate_input($input, $type)
     return $is_lengthy && $is_password;
   }
 
-  if ($type == "slug") {
-    $is_slug = preg_match('/^([a-z(0-9)-]){3,}$/', $input);
-
-    return $is_slug;
-  }
-
+  return false;
 }
 
 /**
+ * Valida si un término existe en la db
  * 
+ * @param $input Término a consultar
+ * @param $term Nombre de la columna en la que se consultará
+ * @param $table Nombre de la tabla en la que se consultará
+ * @param $where Por defecto `null`, si se especifica un `int`, verificará que el `$input` también coincida con el id `$where`
+ * 
+ * @return array|bool Devuelve un `array` con el valor almacenado en `$term` si este existe, de lo contrario devuelve `false` 
  */
-function exist_term($input, $term, $table, $where = null)
+function exist_term($input, $term, $table, $where = null): array|bool
 {
   global $pdo;
 
@@ -138,9 +160,15 @@ function exist_term($input, $term, $table, $where = null)
 }
 
 /**
+ * Función general para insertar datos en la db.
+ * La función debería ser ejecutada dentro de un bloque `try`.
+ * 
+ * @param $data Datos a insertar
+ * - [`Nombre de la columna` => "Valor correspondiente"]
+ * @param $where Nombre de la tabla donde se guardarán los datos
  * 
  */
-function insert_values($data, $where): void
+function insert_values(array $data, string $where): void
 {
   global $pdo;
 
@@ -176,9 +204,15 @@ function insert_values($data, $where): void
 }
 
 /**
+ * Función general para actualizar datos en la db.
+ * La función debería ser ejecutada dentro de un bloque `try`.
+ * 
+ * @param $data Datos a actualizar
+ * - [`Nombre de la columna` => "Valor correspondiente"]
+ * @param $where Nombre de la tabla donde se guardarán los datos
  * 
  */
-function update_values($data, $where): void
+function update_values(array $data, string $where): void
 {
   global $pdo;
 
@@ -209,9 +243,11 @@ function update_values($data, $where): void
 }
 
 /**
+ * Remueve los acentos de una cadena de texto
  * 
+ * @param $term Elemento a procesar
  */
-function remove_accents($term)
+function remove_accents(string $term): string
 {
   $term = str_replace(
     array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
@@ -253,9 +289,11 @@ function remove_accents($term)
 }
 
 /**
+ * Crea un slug (Números, letras minúsuclas y -) a partir de una cadena de texto
  * 
+ * @param $term Elemento a procesar
  */
-function create_slug($term)
+function create_slug(string $term): string
 {
 
   $slug = trim($term);
@@ -268,9 +306,14 @@ function create_slug($term)
 }
 
 /**
+ * Asigna un nombre aleatorio al fichero y sube la imágen al servidor en la carpeta `public/img/products/`
+ * La función debería ser ejecutada dentro de un bloque `try`
  * 
+ * @param $file Información del fichero a ser procesado
+ * 
+ * @return string Devuelve el nombre final del archivo
  */
-function upload_img($file)
+function upload_img(array $file): string
 {
   $file_type = $file['type'];
   $file_name = basename($file['name']);
@@ -282,9 +325,9 @@ function upload_img($file)
     redirect_to('products/');
   }
 
-  $file_extension = str_replace( 'image/', '.', $file_type );
-  $file_name = substr( str_shuffle( '0123456789abcdefghijklmnopqrstuvwxyz' ), 0, 10 );
-  $file_name = "$file_name-" .date('Y-m-d-H-i-s') .$file_extension;
+  $file_extension = str_replace('image/', '.', $file_type);
+  $file_name = substr(str_shuffle('0123456789abcdefghijklmnopqrstuvwxyz'), 0, 10);
+  $file_name = "$file_name-" . date('Y-m-d-H-i-s') . $file_extension;
 
   $file_path = IMG_DIR . "products/$file_name";
 
@@ -299,11 +342,16 @@ function upload_img($file)
 
 # --- Account ---
 
-
 /**
+ * Compara la información del usuario con los datos registrados en la db
  * 
+ * @param $data Credenciales de inicio de sesión dadas por el usuario
+ * - `email` => "foo@foo.com"
+ * - `password` => "foo123_"
+ * 
+ * @return array Devuelve un `array` con la información del usuario si las credenciales son correctas, de lo contrario devuelve un `array` vacío
  */
-function login_user($data)
+function login_user(array $data): array
 {
   global $pdo;
 
@@ -332,6 +380,9 @@ function login_user($data)
 
 # --- Get ---
 
+/**
+ * 
+ */
 function get_orders(int $id): array
 {
 
@@ -339,6 +390,13 @@ function get_orders(int $id): array
   return [];
 }
 
+/**
+ * Obtiene las categorías de productos registradas en la db
+ * 
+ * @param $id Si el `$id` es especificado, obtendrá únicamente la categoría que coincida con este
+ * 
+ * @return array Devuelve un `array` con la información de la/las categorías consultadas, devulve un `array` vacío en caso de que ocurra un error o no se encuentre la categoría con el id `$id`  
+ */
 function get_categories(int $id = null): array
 {
   global $pdo;
@@ -360,6 +418,13 @@ function get_categories(int $id = null): array
   }
 }
 
+/**
+ * Obtiene las mascotas registradas en la db
+ * 
+ * @param $id Si el `$id` es especificado, obtendrá únicamente la mascota que coincida con este
+ * 
+ * @return array Devuelve un `array` con la información de la/las mascotas consultadas, devulve un `array` vacío en caso de que ocurra un error o no se encuentre la mascota con el id `$id`  
+ */
 function get_pets(int $id = null): array
 {
   global $pdo;
@@ -381,7 +446,14 @@ function get_pets(int $id = null): array
   }
 }
 
-function get_products( $id = null ): array
+/**
+ * Obtiene los productos registrados en la db
+ * 
+ * @param $id Si el `$id` es especificado, obtendrá únicamente el producto que coincida con este
+ * 
+ * @return array Devuelve un `array` con la información de el/los productos consultadas, devulve un `array` vacío en caso de que ocurra un error o no se encuentre el producto con el id `$id`  
+ */
+function get_products(int $id = null): array
 {
   global $pdo;
 
@@ -395,7 +467,7 @@ function get_products( $id = null ): array
     ON pet.id = pet_id";
 
   if ($id !== null && $id !== 0)
-  $query .= " WHERE p.id = $id";
+    $query .= " WHERE p.id = $id";
 
   $sth = $pdo->prepare($query);
 
@@ -409,7 +481,9 @@ function get_products( $id = null ): array
 
 # --- Delete ---
 /**
+ * Elimina un producto de la base de datos
  * 
+ * @param $id Id del producto a eliminar
  */
 function delete_product(int $id): void
 {
@@ -425,7 +499,10 @@ function delete_product(int $id): void
 
 # --- Display ---
 
-function display_server_msg()
+/**
+ * Renderiza losm mensajes que haya enviado el servidor hacia el cliente
+ */
+function display_server_msg(): void
 {
   custom_session_start();
 
