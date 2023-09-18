@@ -70,11 +70,13 @@ function server_says($code, $type, $value = "")
       "003" => "Las contraseñas no coinciden.",
       "004" => "Este <b>$value</b> ya se encuentra registrado.",
       "005" => "La contraseña debe contener mínimo <b>8</b> carácteres, sólo puedes usar letras, números y los símbolos: .-_@!#$",
-      "006" => "El correo y la contraseña no coinciden."
+      "006" => "El correo y la contraseña no coinciden.",
+      "007" => "Extensión no soportada, intenta cargar un archivo de tipo: jpeg, jpg, png o webp.",
+      "008" => "Archivo demasiado grande, el límite de subida es de <b>$value</b>."
     ],
     "check" => [
       "001" => "La cuenta se ha creado exitosamente",
-      "002" => "El producto se ha $value correctamente"
+      "002" => "El producto se ha <b>$value</b> correctamente"
     ]
   );
 
@@ -171,6 +173,99 @@ function insert_values($data, $where): void
 
   $sth->execute();
 
+}
+
+/**
+ * 
+ */
+function remove_accents($term)
+{
+  $term = str_replace(
+    array('á', 'à', 'ä', 'â', 'ª', 'Á', 'À', 'Â', 'Ä'),
+    array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
+    $term
+  );
+
+  $term = str_replace(
+    array('é', 'è', 'ë', 'ê', 'É', 'È', 'Ê', 'Ë'),
+    array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
+    $term
+  );
+
+  $term = str_replace(
+    array('í', 'ì', 'ï', 'î', 'Í', 'Ì', 'Ï', 'Î'),
+    array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
+    $term
+  );
+
+  $term = str_replace(
+    array('ó', 'ò', 'ö', 'ô', 'Ó', 'Ò', 'Ö', 'Ô'),
+    array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
+    $term
+  );
+
+  $term = str_replace(
+    array('ú', 'ù', 'ü', 'û', 'Ú', 'Ù', 'Û', 'Ü'),
+    array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
+    $term
+  );
+
+  $term = str_replace(
+    array('ñ', 'Ñ', 'ç', 'Ç'),
+    array('n', 'N', 'c', 'C'),
+    $term
+  );
+
+  return $term;
+}
+
+/**
+ * 
+ */
+function create_slug($term)
+{
+
+  $slug = trim($term);
+  $slug = remove_accents($slug);
+  $slug = strtolower($slug);
+  $slug = preg_replace('/([^a-z0-9-\s])+/', '', $slug);
+  $slug = preg_replace('/\s+/', '-', $slug);
+
+  return $slug;
+}
+
+/**
+ * 
+ */
+function upload_img($file): string
+{
+  $file_type = $file['type'];
+  $file_name = basename($file['name']);
+  $file_temp = $file['tmp_name'];
+  $file_size = $file['size'];
+
+  list($base, $extension) = explode('.', $file_name);
+
+  $file_name = "$base-" . date('Y-m-d-H-i-s') . ".$extension";
+  $file_path = IMG_DIR . "products/$file_name";
+
+  if (!in_array($file_type, PERMITTED_IMG_TYPE)) {
+    server_says('007', 'error');
+    redirect_to('products/');
+  }
+
+  if ($file_size > MAX_UPLOAD_SIZE) {
+    server_says('008', 'error', MAX_UPLOAD_SIZE / 1000000 . "mb");
+    redirect_to('products/');
+  }
+
+  if (file_exists($file_path)) {
+    $file_name = "$base-" . date('Y-m-d-H-i-s') . ".$extension";
+    $file_path = IMG_DIR . "products/$file_name";
+  }
+
+  move_uploaded_file($file_temp, $file_path);
+  return $file_name;
 }
 
 # --- Account ---
@@ -283,13 +378,13 @@ function get_products(): array
 /**
  * 
  */
-function delete_product( int $id ) : void 
+function delete_product(int $id): void
 {
   global $pdo;
 
   $query = "DELETE FROM products WHERE id = :value";
-  $sth = $pdo->prepare( $query );
-  $sth->bindParam( ':value', $id );
+  $sth = $pdo->prepare($query);
+  $sth->bindParam(':value', $id);
   $sth->execute();
 
   return;
