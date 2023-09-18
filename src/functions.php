@@ -479,6 +479,61 @@ function get_products(int $id = null): array
   }
 }
 
+/**
+ * Obtiene el ícono correspondiente para cada item de los productos
+ * 
+ * @param $type Tipo de ícono
+ * - `pet`, `category`
+ * @param $id Id de la mascota/categoría 
+ * @param $pet_id En caso de que el `$type` sea `category`, se debe especificar el `$pet_id`, ya que el ícono dependerá del tipo de mascota
+ * 
+ * @return string Devuelve un elemento `html` con la clase correspondiente al ícono, devuelve un `string` vacío si este ícono no existe.
+ */
+function get_product_icon(string $type, int $id, int $pet_id = null): string
+{
+  $icons = [
+    "pet" => [
+      1 => "dog",
+      2 => "cat"
+    ],
+    "category" => [
+      1 => [
+        1 => "pump-soap",
+        2 => "pump-soap",
+      ],
+      2 => [
+        1 => "bone",
+        2 => "fish",
+      ],
+      3 => [
+        1 => "futbol",
+        2 => "baseball",
+      ],
+      4 => [
+        1 => "heart-circle-plus",
+        2 => "heart-circle-plus",
+      ]
+    ]
+  ];
+  $tag = "<i class='fa fa-:class Icon'></i>";
+
+  if ($type === "pet") {
+    if (isset($icons[$type][$id])) {
+      return str_replace(':class', $icons[$type][$id], $tag);
+    }
+  }
+
+  if ($type === "category") {
+    if (isset($icons[$type][$id])) {
+      if (isset($icons[$type][$id][$pet_id])) {
+        return str_replace(':class', $icons[$type][$id][$pet_id], $tag);
+      }
+    }
+  }
+
+  return "";
+}
+
 # --- Delete ---
 /**
  * Elimina un producto de la base de datos
