@@ -237,31 +237,27 @@ function create_slug($term)
 /**
  * 
  */
-function upload_img($file): string
+function upload_img($file)
 {
   $file_type = $file['type'];
   $file_name = basename($file['name']);
   $file_temp = $file['tmp_name'];
   $file_size = $file['size'];
 
-  list($base, $extension) = explode('.', $file_name);
-
-  $file_name = "$base-" . date('Y-m-d-H-i-s') . ".$extension";
-  $file_path = IMG_DIR . "products/$file_name";
-
   if (!in_array($file_type, PERMITTED_IMG_TYPE)) {
     server_says('007', 'error');
     redirect_to('products/');
   }
 
+  $file_extension = str_replace( 'image/', '.', $file_type );
+  $file_name = substr( str_shuffle( '0123456789abcdefghijklmnopqrstuvwxyz' ), 0, 10 );
+  $file_name = "$file_name-" .date('Y-m-d-H-i-s') .$file_extension;
+
+  $file_path = IMG_DIR . "products/$file_name";
+
   if ($file_size > MAX_UPLOAD_SIZE) {
     server_says('008', 'error', MAX_UPLOAD_SIZE / 1000000 . "mb");
     redirect_to('products/');
-  }
-
-  if (file_exists($file_path)) {
-    $file_name = "$base-" . date('Y-m-d-H-i-s') . ".$extension";
-    $file_path = IMG_DIR . "products/$file_name";
   }
 
   move_uploaded_file($file_temp, $file_path);
