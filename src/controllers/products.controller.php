@@ -109,6 +109,79 @@ if (isset($_POST['submit'])) {
     }
 
   }
+
+  if ($_POST['submit'] === "Editar") {
+
+    $form_input_names = [
+      'title' => 'Título',
+      'price' => 'Precio',
+      'pet' => 'Mascota',
+      'category' => 'Categoría'
+    ];
+
+    foreach ($_POST as $name => $content) {
+
+      if (key_exists($name, $form_input_names)) {
+
+        $input_name = $form_input_names[$name];
+
+        if (empty(trim($content))) {
+          server_says('001', 'error', $input_name);
+          redirect_to('products/');
+        }
+      }
+
+    }
+
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+      server_says('000', 'error');
+      redirect_to('products/');
+    }
+
+    $id = $_POST['id'];
+    $title = trim($_POST['title']);
+    $slug = create_slug($title);
+    $price = $_POST['price'];
+    $pet = $_POST['pet'];
+    $category = $_POST['category'];
+
+    $data = ['id' => $id, 'values' => []];
+
+    if (exist_term($title, 'title', 'products')) {
+      server_says('004', 'error', 'nombre de producto');
+      redirect_to('products/');
+    }
+
+    $data['values']['title'] = $title;
+    $data['values']['slug'] = $slug;
+
+    if (!exist_term($price, 'price', 'products', $id))
+      $data['values']['price'] = $price;
+
+    if (!exist_term($pet, 'pet_id', 'products', $id))
+      $data['values']['pet_id'] = $pet;
+
+    if (!exist_term($category, 'category_id', 'products', $id))
+      $data['values']['category_id'] = $category;
+
+    if (isset($_FILES['thumb']) && !empty($_FILES['thumb']['name'])) {
+
+      $img = upload_img($_FILES['thumb']);
+
+      if (!empty($img)) {
+        $data['values']['thumb'] = $img;
+      }
+    }
+
+    try {
+      update_values($data, 'products');
+      server_says('002', 'check', 'actualizado');
+    } catch (\Throwable $th) {
+      server_says('000', 'error');
+    }
+
+    redirect_to('products/');
+  }
 }
 
 redirect_to('products/');

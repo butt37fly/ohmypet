@@ -178,6 +178,39 @@ function insert_values($data, $where): void
 /**
  * 
  */
+function update_values($data, $where): void
+{
+  global $pdo;
+
+  $params = "";
+  $count = 0;
+
+  foreach ($data['values'] as $key => $value) {
+    $params .= "$key = :value$count";
+    $count += 1;
+
+    if ($count < count($data['values'])) {
+      $params .= ", ";
+    }
+  }
+
+  $count = 0;
+  $params = trim($params);
+  $query = "UPDATE $where SET $params WHERE id = $data[id]";
+  $sth = $pdo->prepare($query);
+
+  foreach ($data['values'] as $key => $value) {
+    $sth->bindParam(":value$count", $data['values'][$key]);
+    $count += 1;
+  }
+
+  $sth->execute();
+
+}
+
+/**
+ * 
+ */
 function remove_accents($term)
 {
   $term = str_replace(
