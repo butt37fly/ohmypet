@@ -352,7 +352,7 @@ function get_pets(int $id = null): array
   }
 }
 
-function get_products(): array
+function get_products( $id = null ): array
 {
   global $pdo;
 
@@ -364,6 +364,10 @@ function get_products(): array
     ON c.id = category_id
     INNER JOIN pets as pet
     ON pet.id = pet_id";
+
+  if ($id !== null && $id !== 0)
+  $query .= " WHERE p.id = $id";
+
   $sth = $pdo->prepare($query);
 
   try {
