@@ -43,6 +43,7 @@ if (isset($_POST['submit'])) {
     $form_input_names = [
       'title' => 'Título',
       'price' => 'Precio',
+      'amount' => 'Cantidad',
       'pet' => 'Mascota',
       'category' => 'Categoría'
     ];
@@ -64,6 +65,7 @@ if (isset($_POST['submit'])) {
     $title = trim($_POST['title']);
     $slug = create_slug($title);
     $price = $_POST['price'];
+    $amount = $_POST['amount'];
     $pet = $_POST['pet'];
     $category = $_POST['category'];
 
@@ -97,6 +99,7 @@ if (isset($_POST['submit'])) {
         'title' => $title,
         "slug" => $slug,
         "price" => $price,
+        "amount" => $amount,
         "thumb" => $img,
         "post_date" => date("Y-m-d")
       ], 'products');
@@ -115,6 +118,7 @@ if (isset($_POST['submit'])) {
     $form_input_names = [
       'title' => 'Título',
       'price' => 'Precio',
+      'amount' => 'Cantidad',
       'pet' => 'Mascota',
       'category' => 'Categoría'
     ];
@@ -142,21 +146,28 @@ if (isset($_POST['submit'])) {
     $title = trim($_POST['title']);
     $slug = create_slug($title);
     $price = $_POST['price'];
+    $amount = $_POST['amount'];
     $pet = $_POST['pet'];
     $category = $_POST['category'];
 
     $data = ['id' => $id, 'values' => []];
 
-    if (exist_term($title, 'title', 'products')) {
-      server_says('004', 'error', 'nombre de producto');
-      redirect_to('products/');
-    }
+    if (! exist_term($title, 'title', 'products', $id)) {
 
-    $data['values']['title'] = $title;
-    $data['values']['slug'] = $slug;
+      if (exist_term($title, 'title', 'products')) {
+        server_says('004', 'error', 'nombre de producto');
+        redirect_to('products/');
+      }
+
+      $data['values']['title'] = $title;
+      $data['values']['slug'] = $slug;
+    }
 
     if (!exist_term($price, 'price', 'products', $id))
       $data['values']['price'] = $price;
+
+    if (!exist_term($amount, 'amount', 'products', $id))
+      $data['values']['amount'] = $amount;
 
     if (!exist_term($pet, 'pet_id', 'products', $id))
       $data['values']['pet_id'] = $pet;

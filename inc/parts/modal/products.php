@@ -23,6 +23,10 @@ $categories = get_categories(); ?>
           <label for="thumb">Imágen</label>
           <input class="Form__input" id="thumb" type="file" name="thumb">
         </div>
+        <div class="Form__field">
+        <label for="amount">Cantidad</label>
+          <input class="Form__input" id="amount" type="number" name="amount">
+        </div>
       </div>
       <div class="Form__section">
         <div class="Form__field">

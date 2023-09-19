@@ -139,9 +139,9 @@ function validate_input(string $input, string $type): bool
  * @param $table Nombre de la tabla en la que se consultará
  * @param $where Por defecto `null`, si se especifica un `int`, verificará que el `$input` también coincida con el id `$where`
  * 
- * @return array|bool Devuelve un `array` con el valor almacenado en `$term` si este existe, de lo contrario devuelve `false` 
+ * @return stdClass|bool Devuelve un `stdClass` con el valor almacenado en `$term` si este existe, de lo contrario devuelve `false` 
  */
-function exist_term($input, $term, $table, $where = null): array|bool
+function exist_term($input, $term, $table, $where = null): stdClass|bool
 {
   global $pdo;
 
@@ -459,7 +459,7 @@ function get_products(int $id = null): array
 
   $result = [];
 
-  $query = "SELECT p.id, c.id as category_id, c.name as category_name, pet.id as pet_id, pet.name as pet_name, p.title, p.slug, p.price, p.thumb, p.post_date 
+  $query = "SELECT p.id, c.id as category_id, c.name as category_name, pet.id as pet_id, pet.name as pet_name, p.title, p.slug, p.price, p.amount, p.thumb, p.post_date 
     FROM products p
     INNER JOIN categories as c
     ON c.id = category_id

@@ -43,6 +43,7 @@ CREATE TABLE products (
   title varchar(250) NOT NULL unique,
   slug varchar(250) NOT NULL unique,
   price int(250) NOT NULL,
+  amount int(250) NOT NULL,
   thumb varchar(250) NOT NULL,
   post_date date NOT NULL,
   PRIMARY KEY(id),
@@ -75,7 +76,7 @@ INSERT INTO categories ( name, slug ) VALUES
 ( 'Deporte', 'deporte' ),
 ( 'Salud', 'salud' );
 
-INSERT INTO products ( category_id, pet_id, title, slug, price, thumb, post_date ) VALUES
-( 1, 1, 'Sample product 1', 'sample-product-1', 12000, 'placeholder.png', curdate() ),
-( 2, 2, 'Sample product 2', 'sample-product-2', 8000, 'placeholder.png', curdate() ),
-( 3, 1, 'Sample product 3', 'sample-product-3', 10500, 'placeholder.png', curdate() );
+INSERT INTO products ( category_id, pet_id, title, slug, price, amount, thumb, post_date ) VALUES
+( 1, 1, 'Sample product 1', 'sample-product-1', 12000, '13', 'placeholder.png', curdate() ),
+( 2, 2, 'Sample product 2', 'sample-product-2', 8000, '20', 'placeholder.png', curdate() ),
+( 3, 1, 'Sample product 3', 'sample-product-3', 10500, '0', 'placeholder.png', curdate() );

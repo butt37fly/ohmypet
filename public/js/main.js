@@ -60,6 +60,7 @@ function Modal() {
     $("#id", true, form).value = data.id;
     $("#title", true, form).value = data.title;
     $("#price", true, form).value = data.price;
+    $("#amount", true, form).value = data.amount;
     $(`#pet option[value="${data.pet}"]`, true, form).setAttribute(
       "selected",
       true
@@ -80,6 +81,7 @@ function Modal() {
     $("#id", true, form).value = null;
     $("#title", true, form).value = "";
     $("#price", true, form).value = "";
+    $("#amount", true, form).value = "";
 
     let pet = $(`#pet option[selected="true"]`, true, form);
     let category = $(`#category option[selected="true"]`, true, form);
