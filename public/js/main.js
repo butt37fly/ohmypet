@@ -48,6 +48,8 @@ function Modal() {
   const editButtons = $('[data-action="Edit"]', false);
   const className = "Modal--active";
 
+  if (!openButtons || !closeButtons || !editButtons) return;
+
   const getModal = (e) => $(`[data-modal-name="${e.dataset.target}"]`);
   const getData = (e) => JSON.parse($("span", true, e).textContent);
 
@@ -95,23 +97,29 @@ function Modal() {
   openButtons.forEach((button) => {
     let modal = getModal(button);
 
+    if (!modal) return;
+
     button.addEventListener("click", () => {
       modal.classList.add(className);
     });
   });
-  
+
   closeButtons.forEach((button) => {
     let modal = getModal(button);
-    
+
+    if (!modal) return;
+
     button.addEventListener("click", () => {
       modal.classList.remove(className);
-      setTimeout( () => clearData(modal), 350);
+      setTimeout(() => clearData(modal), 350);
     });
   });
 
   editButtons.forEach((button) => {
     let modal = getModal(button);
     let data = getData(button);
+
+    if (!modal) return;
 
     button.addEventListener("click", () => {
       setData(data, modal);
