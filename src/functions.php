@@ -571,3 +571,94 @@ function display_server_msg(): void
 
   unset($_SESSION['server_says']);
 }
+
+/**
+ * Renderiza las cards de los productos
+ * 
+ * @param $products Array con la información de los productos obtenida con la función `get_products`
+ */
+function display_products(array $products): void
+{
+
+  foreach ($products as $product):
+    $amount = $product->amount > 0 ? "Disponible ($product->amount)" : "Agotado"; ?>
+
+    <article class="Card Card--<?php echo $product->category_id ?>">
+      <div class="Card__wrapper">
+        <section class="Card__side Card__side--front" data-action="flip">
+          <div class="Card__content">
+            <div class="Card__thumb">
+              <img src="<?php echo SITE_URI . "public/img/products/$product->thumb" ?>" alt="<?php echo $product->title ?>"
+                class="Card__img">
+            </div>
+            <h2 class="Card__title Card__title--shorted">
+              <?php echo $product->title ?>
+            </h2>
+            <div class="Card__info Card__info--row">
+              <span class="Card__item">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <?php echo "$$product->price/u" ?>
+              </span>
+              <span class="Card__item">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <?php echo $amount ?>
+              </span>
+            </div>
+          </div>
+        </section>
+        <section class="Card__side Card__side--back">
+          <div class="Card__content Card__content--filled">
+            <h2 class="Card__title">
+              <?php echo $product->title ?>
+            </h2>
+            <div class="Card__info">
+              <span class="Card__item Card__item--big">
+                <?php echo get_product_icon('pet', $product->pet_id); ?>
+                <?php echo "Para: <b>$product->pet_name</b>" ?>
+              </span>
+              <span class="Card__item Card__item--big">
+                <?php echo get_product_icon('category', $product->category_id, $product->pet_id); ?>
+                <?php echo "Categoría: <b>$product->category_name</b>" ?>
+              </span>
+              <span class="Card__item Card__item--big">
+                <i class="fa-solid fa-sack-dollar"></i>
+                <?php echo "$$product->price/u" ?>
+              </span>
+              <span class="Card__item Card__item--big">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <?php echo $amount ?>
+              </span>
+            </div>
+
+            <?php if ($product->amount > 0): ?>
+
+              <form class="Add-to-cart" action="<?php echo SITE_URI . "c/cart/" ?>" method="POST">
+                <input type="hidden" name="id" value="<?php echo $product->id ?>">
+                <label for="amount-<?php echo $product->id ?>">Cantidad</label>
+                <div class="Form__field Form__field--row">
+                  <input class="Form__input Form__input--add-to-cart" type="number" name="amount"
+                    id="amount-<?php echo $product->id ?>" min="1" max="<?php echo $product->amount ?>">
+                  <input class="Button" type="submit" value="Añadir">
+                </div>
+              </form>
+
+            <?php endif; ?>
+
+            <section class="Card__actions">
+              <button class="Button Card__action" data-action="share"
+                data-tooltip="Haz click para copiar el enlace de este producto"
+                data-link="<?php echo SITE_URI . "store/product/$product->slug/" ?>">
+                <i class="fa-solid fa-share-from-square"></i>
+              </button>
+              <button class="Button" data-action="flip" data-tooltip="Haz click para regresar">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </section>
+          </div>
+        </section>
+      </div>
+    </article>
+
+  <?php endforeach;
+
+}

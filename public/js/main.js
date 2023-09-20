@@ -20,6 +20,7 @@ Init();
  */
 function BodyFunctions() {
   Modal();
+  Cards();
 }
 
 /**
@@ -125,5 +126,66 @@ function Modal() {
       setData(data, modal);
       modal.classList.add(className);
     });
+  });
+}
+
+/**
+ *
+ */
+function Cards() {
+  const cards = $(".Card", false);
+  const className = "Card__wrapper--flipped";
+
+  if (!cards) return;
+
+  const setListeners = (els, target) => {
+    els.forEach((el) => {
+      el.addEventListener("click", () => {
+        target.classList.toggle(className);
+      });
+    });
+  };
+
+  const copyLink = async (link) => {
+    await navigator.clipboard.writeText(link);
+  };
+
+  const share = (el) => {
+    let link = el.dataset.link;
+    let defaultMsg = el.dataset.tooltip;
+    let newMsg = "¡Link copiado al portapapeles!";
+    let className = "checked";
+
+    el.addEventListener("click", () => {
+      try {
+        copyLink(link);
+        el.classList.add(className);
+        el.dataset.tooltip = newMsg;
+      } catch (error) {
+        el.classList.remove(className);
+        el.classList.add("error");
+        el.dataset.tooltip =
+          "Parece que algo ha salido mal, inténtalo de nuevo más tarde";
+      } finally {
+        setTimeout(() => {
+          el.classList.remove(className);
+          el.dataset.tooltip = defaultMsg;
+        }, 5000);
+      }
+    });
+  };
+
+  cards.forEach((card) => {
+    let wrapper = $(".Card__wrapper", true, card);
+    let triggers = $('[data-action="flip"]', false, card);
+    let shareButton = $('[data-action="share"]', true, card);
+
+    if (!wrapper || !triggers) return;
+
+    setListeners(triggers, wrapper);
+
+    if (!shareButton) return;
+
+    share(shareButton);
   });
 }
